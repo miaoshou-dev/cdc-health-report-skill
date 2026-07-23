@@ -64,6 +64,21 @@ reference_date, latest, action, output_format
 - For `latest`, inspect all valid records on the first list page; prefer highest issue for influenza, otherwise reporting period then publication date.
 - Return `not_found` only after a complete healthy search; technical failures are not absence.
 
+## Unified runtime
+
+For `locate`, `download`, and native `extract`, prefer the single-process runner:
+
+```bash
+python3 scripts/fetch_report.py \
+  --report-type <id> (--latest | --year <year> (--week <week> | --month <month>)) \
+  [--issue <issue>] --action <locate|download|extract>
+```
+
+It keeps one browser-session lifecycle, routes HTML and PDF carriers without
+unneeded work, reuses valid extraction artifacts, manages extract-only PDFs in
+an automatically cleaned temporary directory, and prints only a compact result.
+The verification and fallback requirements below still apply.
+
 ## Locate and verify
 
 1. Load the agent-browser core guide once and open a fresh isolated named session.

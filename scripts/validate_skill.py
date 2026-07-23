@@ -134,8 +134,12 @@ require("every physical page" in pdf_rules, "PDF rules do not require every phys
 require("directly within the main Skill" in pdf_rules, "PDF rules still depend on another Skill")
 
 downloader = read("scripts/download_official_document.py")
+fetcher = read("scripts/fetch_report.py")
 require("ProxyHandler({})" in downloader, "downloader must ignore proxy environment")
 require('OFFICIAL_HOST = "www.chinacdc.cn"' in downloader, "downloader must pin the official host")
+require("TemporaryDirectory" in fetcher, "unified fetcher must clean extract-only PDF transfers")
+require("def run_pipeline(" in fetcher, "unified fetcher lacks the pipeline entry point")
+require("scripts/fetch_report.py" in skill, "SKILL.md does not route supported actions through the unified runner")
 require("transfer verified bytes only with:" in skill.lower(), "SKILL.md must route PDF bytes through the downloader")
 require("without opening a browser pdf viewer" in skill.lower(), "SKILL.md must prohibit browser PDF viewers")
 
