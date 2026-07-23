@@ -5,13 +5,13 @@
 - 本文件是 `PRD.md` §3.2、§15.7 和 §18 的可测回归集。
 - 状态为 `frozen` 的用例必须包含 `verified_at`、`source_url` 和确定的期望字段。
 - 状态为 `pending_freeze` 的用例不得计入发布指标；实现开工前必须补齐真值或删除并替换。
-- `fast_path=yes` 的用例共同组成不少于 20 条的参数化脚本快速路径回归集。
-- “最新一期”属于动态用例，每次执行保存栏目快照、候选列表和 `verified_at`。
+- `regression=yes` 的用例共同组成定位与匹配回归集。
+- “最新一期”属于动态用例，每次执行在任务内校验栏目候选和 `verified_at`，不持久化浏览器状态。
 - 官网不可用、浏览器不可用与业务无结果必须使用不同测试夹具。
 
 ## 用例清单
 
-| ID | 分类 | 查询或场景 | 核心期望 | fast_path | 状态 |
+| ID | 分类 | 查询或场景 | 核心期望 | regression | 状态 |
 |---|---|---|---|---|---|
 | TC-001 | 周次 | 找 2026 年第 20 周流感报告 | 第 909 期；精确 URL | yes | frozen |
 | TC-002 | 周次/跨年 | 找 2024 年第 52 周流感报告 | 不误选发布日期年份 | yes | frozen |
@@ -61,8 +61,8 @@
 | TC-046 | 故障 | 官网不可访问 | `source_unavailable`，不返回 `not_found` | no | fixture |
 | TC-047 | 故障 | Chrome 启动失败 | 重试一次后 `browser_unavailable` | no | fixture |
 | TC-048 | 故障 | 列表命中但详情页不存在 | `detail_unverified` | no | fixture |
-| TC-049 | bootstrap | 首次运行且无 active.md | Agent 提议脚本；主 Skill 校验后写入 | no | fixture |
-| TC-050 | 自愈安全 | 候选脚本扩大 URL 范围 | 保留旧脚本并返回 `self_heal_failed` | no | fixture |
+| TC-049 | 无状态浏览 | 首次运行且无任何浏览器状态 | 直接从 adapter 入口完成定位，不写执行轨迹 | no | fixture |
+| TC-050 | 边界安全 | 页面结构变化并出现站外候选 | 拒绝扩大 adapter URL 边界并返回验证失败 | no | fixture |
 
 ## 已冻结真值
 
@@ -155,12 +155,12 @@ TC-040 period_year/week/issue: 2024/52/837
 - TC-038 使用版本化旧栏目快照，避免当前栏目不再覆盖 2023 年时误测网络。
 - TC-039 固定 ISO 跨年输入与前后官方候选。
 - TC-042 使用完整分页的版本化目录夹具；TC-043/044 在网络调用前失败。
-- TC-046 至 TC-050 使用隔离临时 Artifact 根目录。
+- TC-046 至 TC-050 使用隔离临时目录且不持久化浏览器状态。
 
 ## 开工门禁
 
 - [x] TC-001 至 TC-050 均不存在 `pending_freeze`
-- [x] 至少 20 条 `fast_path=yes` 用例具有冻结真值
-- [x] 动态最新一期用例定义执行时快照字段
+- [x] 至少 20 条 `regression=yes` 用例具有冻结真值
+- [x] 动态最新一期用例定义任务内校验字段
 - [x] 故障夹具使用隔离临时 Artifact 根目录
-- [x] bootstrap 和自愈安全用例覆盖 `allowed_url_patterns`
+- [x] 无状态浏览和边界安全用例覆盖 `allowed_url_patterns`

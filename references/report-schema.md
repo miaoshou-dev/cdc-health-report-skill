@@ -1,10 +1,10 @@
 # Report object schema
 
-Schema version: `1.0`.
+Schema version: `2.0`.
 
 ```json
 {
-  "schema_version": "1.0",
+  "schema_version": "2.0",
   "report_id": "influenza_weekly-2026-W28-I917",
   "report_type": "influenza_weekly",
   "period_type": "week",

@@ -4,7 +4,7 @@
 
 | Field | Meaning |
 |---|---|
-| `id` | Stable report type and memory directory key |
+| `id` | Stable report type and registry key |
 | `index_url` | Official initial listing URL |
 | `allowed_path_prefix` | Prefix passed to the verified PDF downloader |
 | `period_type` | `week` or `month` |

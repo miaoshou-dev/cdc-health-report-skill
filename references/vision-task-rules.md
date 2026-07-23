@@ -1,22 +1,13 @@
 # Visual processing rules
 
-Run a visual task only when all are true: `vision` is authorized; the region is relevant to the user's question; native extraction cannot answer it; it is not decorative; and budget remains.
+Use vision only with explicit authorization and only for user-relevant pages already listed in `vision_pages`.
 
-## Task behavior
+- Render the smallest useful page or region into task-temporary storage.
+- Preserve OCR reading order, image-table structure, chart titles, axes, units, legends, series, annotations, and labeled values.
+- Mark estimates from unlabeled curves with `approximate=true`.
+- Write results into the matching page's `visuals` array in the same `extracted.json`.
+- Set `requires_vision=false` only when the relevant content is resolved, then recompute `vision_pages`.
+- On failure, keep the page number and add a concise warning.
+- Delete every render and crop after success or failure.
 
-- OCR preserves reading order and uncertainty; never fill missing text.
-- Image-table extraction preserves row/column structure, headers, footnotes, raw strings, and validation totals.
-- Chart extraction identifies title, chart type, axes, units, legend, series, labeled values, and source location.
-- Unlabeled curves produce only approximate values with confidence and error notes.
-- Send the smallest useful crop, not the whole PDF or unrelated pages.
-- Keep visual results alongside native evidence and mark conflicts; never overwrite native evidence.
-
-## Sole budget table
-
-| Mode | Initial regions | Maximum total attempts per task | Confirmation | Failure |
-|---|---:|---:|---|---|
-| `economy` | 0 | 0 | No | Return native result and skipped tasks |
-| `balanced` | 3 | 2 | No | Skip excess; return partial after second failure |
-| `complete` | All relevant | 2 | Confirm if more than 3 regions | Batch; do not loop failures |
-
-Default to `balanced`. A retry may raise render detail or widen the crop and must include the first failure reason. Report candidate count, executed count, skipped reasons, retry count, budget mode, and whether the result is partial.
+Do not create visual-task records, retained images, retry ledgers, or separate output files.

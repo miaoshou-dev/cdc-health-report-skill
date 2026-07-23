@@ -1,4 +1,4 @@
 interface:
   display_name: "CDC Report PDF Extractor"
-  short_description: "Extract native evidence from China CDC PDF reports"
-  default_prompt: "Use $cdc-report-pdf-extractor to extract targeted native evidence from this authorized China CDC PDF."
+  short_description: "Extract China CDC PDFs page by page"
+  default_prompt: "Use $cdc-report-pdf-extractor to parse every page of this authorized China CDC PDF into one extracted.json file."

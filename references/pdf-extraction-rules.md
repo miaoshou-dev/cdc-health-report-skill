@@ -1,34 +1,21 @@
-# PDF deterministic extraction contract
+# PDF extraction contract
 
-This reference defines the handoff to the separately installed `cdc-report-pdf-extractor` Skill. `extract` authorization allows native inspection and extraction; only `vision` allows OCR or image/chart interpretation.
+The separately installed `cdc-report-pdf-extractor` receives one local official PDF, normalized report metadata, one absolute `extracted.json` path, and `extract` or `vision` authorization.
 
-## Native-first sequence
+## Native extraction
 
-1. Inspect per-page text presence/character quality, images, vector lines, table/chart candidates, and scan/cover status.
-2. Prefer `pdfinfo`, `pdftotext`, `pypdf`, and `pdfplumber` available in the bundled runtime.
-3. Extract text with page, blocks, reading order, bbox, original string, and method.
-4. Reconstruct character/vector tables programmatically; retain raw and parsed values, units, counts, percentages, headers, and footnotes.
-5. Validate row/column totals, percentage bounds/totals where meaningful, period, header, and unit.
-6. Emit an `unresolved` item only when native evidence cannot answer a relevant target.
-7. Do not render or OCR merely because a page contains an image.
+1. Process every physical page in ascending order.
+2. Extract readable native text and native tables with bundled PDF tools.
+3. Preserve table titles, headers, row order, footnotes, units, and original strings.
+4. Keep uncertain output and add a warning; never repair values by guessing.
+5. Add exactly one page object for each physical page.
+6. If relevant content is visually encoded and unreadable natively, set `requires_vision=true`.
+7. Derive `vision_pages` as the unique ascending page numbers requiring vision.
 
-## Evidence
+Do not persist page maps, coordinates, extraction evidence, screenshots, crops, or visual-task descriptions.
 
-```json
-{
-  "schema_version": "1.0",
-  "request": {"targets": [], "period": null},
-  "native_evidence": [{
-    "page": 1, "location": "table_or_bbox", "original_text": "",
-    "value": null, "unit": null, "method": "native_text",
-    "approximate": false,
-    "validation": {"period_match": true, "header_match": true, "unit_match": true}
-  }],
-  "unresolved": [],
-  "warnings": []
-}
-```
+## Temporary and saved PDFs
 
-An unresolved item includes `id`, `type`, `page`, optional image/bbox, `reason`, `requires_vision`, `relevance_tags`, `estimated_cost`, and `expected_output`. Identification does not authorize execution.
+When extraction does not include an explicit download request, place the verified PDF in a task-temporary directory and remove it after success or failure. When download is explicitly requested, the verified PDF may remain beside `extracted.json`.
 
-The frozen `P020260715815376876315.pdf` baseline has 19 pages; pages 2–18 have usable text, pages 1 and 19 are primarily images, tables on pages 4 and 13 are native-first candidates, and line charts are primarily images.
+The frozen influenza sample contains 19 physical pages; its extraction must contain 19 ordered page objects.
