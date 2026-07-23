@@ -15,7 +15,7 @@ Exit condition: all five sources can be located without reading or writing brows
 - Use a task-temporary output directory for extract-only PDF transfers and clean it in all exit paths.
 - Persist extraction only to `artifacts/<report-id>/extracted.json`.
 - Implement schema v2 for PDF pages and HTML content.
-- Simplify the companion extractor to process every PDF page and derive `vision_pages`.
+- Process every PDF page within the main Skill and derive `vision_pages`.
 
 Exit condition: locate writes nothing; extract writes one JSON; download may additionally retain one verified PDF.
 
@@ -35,7 +35,7 @@ Exit condition: visual processing creates no second artifact and failed pages re
 - Align the PRD, workflow, schemas, extraction rules, and regression cases with v2.
 - Remove legacy browser-state files and references.
 - Update structural validation to enforce five adapters, schema v2, one parsing artifact, downloader safety, and absence of legacy concepts.
-- Retain the frozen report identities and matching regression matrix.
+- Retain the frozen report identities and matching regression matrix under repository tests, outside the distributed Skill.
 
 Exit condition: repository-wide searches find no legacy memory, route-learning, or separate evidence contract in tracked runtime/design files.
 

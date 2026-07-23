@@ -147,7 +147,7 @@ PDFs used for extract-only work and all visual renders live in a task-temporary 
 
 Use:
 
-`success`, `invalid_query`, `ambiguous`, `not_found`, `search_budget_exceeded`, `source_unavailable`, `browser_unavailable`, `tool_environment_error`, `detail_unverified`, `artifact_store_unavailable`, `download_failed`, `extractor_unavailable`, `extraction_partial`, `vision_budget_exceeded`, or `internal_error`.
+`success`, `invalid_query`, `ambiguous`, `not_found`, `search_budget_exceeded`, `source_unavailable`, `browser_unavailable`, `tool_environment_error`, `detail_unverified`, `artifact_store_unavailable`, `download_failed`, `extraction_partial`, `vision_budget_exceeded`, or `internal_error`.
 
 Page-structure failures map to source or detail verification failures. There are no browser-learning or route-update statuses.
 

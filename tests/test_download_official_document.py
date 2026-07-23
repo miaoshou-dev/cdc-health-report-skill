@@ -11,7 +11,10 @@ from email.message import Message
 from pathlib import Path
 
 
-SCRIPT = Path(__file__).resolve().parents[1] / "scripts/download_official_document.py"
+SCRIPT = (
+    Path(__file__).resolve().parents[1]
+    / "skills/find-china-cdc-health-report/scripts/download_official_document.py"
+)
 SPEC = importlib.util.spec_from_file_location("download_official_document", SCRIPT)
 MODULE = importlib.util.module_from_spec(SPEC)
 assert SPEC and SPEC.loader

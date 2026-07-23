@@ -10,4 +10,4 @@ sha256: 9a6f23cef5ae56ff570feec73cd3b1eaedf14927a6943a2eb232d6924dc79356
 size_bytes: 5441044
 ```
 
-The repository must contain the exact bytes at `references/samples/P020260715815376876315.pdf` before release. Do not populate this path from a user's Downloads directory. If the official direct download is unavailable, publish the verified bytes as a versioned immutable release asset and record that URL here.
+The repository may place the exact bytes at `tests/samples/P020260715815376876315.pdf` for local regression. Do not populate this path from a user's Downloads directory. The sample is not included in the distributed Skill archive.

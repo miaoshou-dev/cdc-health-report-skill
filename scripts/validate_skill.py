@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 ROOT = Path(__file__).resolve().parents[1]
+SKILL_ROOT = ROOT / "skills/find-china-cdc-health-report"
 ERRORS: list[str] = []
 
 
@@ -18,8 +19,14 @@ def require(condition: bool, message: str) -> None:
 
 
 def read(relative: str) -> str:
-    path = ROOT / relative
+    path = SKILL_ROOT / relative
     require(path.is_file(), f"missing file: {relative}")
+    return path.read_text(encoding="utf-8") if path.is_file() else ""
+
+
+def read_repo(relative: str) -> str:
+    path = ROOT / relative
+    require(path.is_file(), f"missing repository file: {relative}")
     return path.read_text(encoding="utf-8") if path.is_file() else ""
 
 
@@ -48,7 +55,6 @@ required_refs = (
     "pdf-extraction-rules.md",
     "vision-task-rules.md",
     "artifact-schema.md",
-    "test-cases.md",
 )
 for name in required_refs:
     read(f"references/{name}")
@@ -64,7 +70,7 @@ registry = read("references/source-registry.md")
 for source_id in source_ids:
     require(f"`{source_id}`" in registry, f"missing source registry entry: {source_id}")
 
-adapter_files = sorted((ROOT / "references/adapters").glob("*.md"))
+adapter_files = sorted((SKILL_ROOT / "references/adapters").glob("*.md"))
 require(len(adapter_files) == 5, f"expected 5 adapter files, found {len(adapter_files)}")
 for path in adapter_files:
     content = path.read_text(encoding="utf-8")
@@ -83,18 +89,18 @@ for path in adapter_files:
 
 legacy_browser_dir = "browser" + "-memory"
 require(not (ROOT / legacy_browser_dir).exists(), "legacy browser state directory still exists")
-require(not (ROOT / "references/browser-scripts.md").exists(), "legacy browser script reference still exists")
+require(not (SKILL_ROOT / "references/browser-scripts.md").exists(), "legacy browser script reference still exists")
+require(not (ROOT / "companion-skills").exists(), "legacy companion Skill directory still exists")
 
 tracked_contract_files = [
-    ROOT / "SKILL.md",
+    SKILL_ROOT / "SKILL.md",
     ROOT / "docs/PRD.md",
     ROOT / "docs/dev-plan.md",
-    ROOT / "references/artifact-schema.md",
-    ROOT / "references/output-schema.md",
-    ROOT / "references/pdf-extraction-rules.md",
-    ROOT / "references/vision-task-rules.md",
-    ROOT / "references/workflow.md",
-    ROOT / "companion-skills/cdc-report-pdf-extractor/SKILL.md",
+    SKILL_ROOT / "references/artifact-schema.md",
+    SKILL_ROOT / "references/output-schema.md",
+    SKILL_ROOT / "references/pdf-extraction-rules.md",
+    SKILL_ROOT / "references/vision-task-rules.md",
+    SKILL_ROOT / "references/workflow.md",
 ]
 legacy_terms = (
     "active" + ".md",
@@ -123,9 +129,9 @@ artifact_schema = read("references/artifact-schema.md")
 require("extracted.json" in artifact_schema, "Artifact schema lacks extracted.json")
 require("explicit download" in artifact_schema, "Artifact schema lacks explicit PDF download rule")
 
-extractor = read("companion-skills/cdc-report-pdf-extractor/SKILL.md")
-require("every physical page" in extractor, "extractor does not require every PDF page")
-require("one schema-version `2.0` `extracted.json`" in extractor, "extractor lacks the single-file v2 contract")
+pdf_rules = read("references/pdf-extraction-rules.md")
+require("every physical page" in pdf_rules, "PDF rules do not require every physical page")
+require("directly within the main Skill" in pdf_rules, "PDF rules still depend on another Skill")
 
 downloader = read("scripts/download_official_document.py")
 require("ProxyHandler({})" in downloader, "downloader must ignore proxy environment")
@@ -133,17 +139,20 @@ require('OFFICIAL_HOST = "www.chinacdc.cn"' in downloader, "downloader must pin 
 require("transfer verified bytes only with:" in skill.lower(), "SKILL.md must route PDF bytes through the downloader")
 require("without opening a browser pdf viewer" in skill.lower(), "SKILL.md must prohibit browser PDF viewers")
 
-tests = read("references/test-cases.md")
+tests = read_repo("tests/reference-cases.md")
 for number in range(1, 51):
     require(f"TC-{number:03}" in tests, f"missing TC-{number:03}")
 require("TC-049 | 无状态浏览" in tests, "TC-049 does not cover stateless browsing")
 require("TC-050 | 边界安全" in tests, "TC-050 does not cover adapter boundaries")
 
-gitignore = read(".gitignore")
-require("/artifacts/*" in gitignore, "runtime artifacts are not ignored")
-require((ROOT / "artifacts" / ".gitkeep").is_file(), "artifacts placeholder missing")
+gitignore = read_repo(".gitignore")
+require(
+    "/skills/find-china-cdc-health-report/artifacts/*" in gitignore,
+    "runtime artifacts are not ignored",
+)
+require((SKILL_ROOT / "artifacts" / ".gitkeep").is_file(), "artifacts placeholder missing")
 
-sample = ROOT / "references/samples/P020260715815376876315.pdf"
+sample = ROOT / "tests/samples/P020260715815376876315.pdf"
 if sample.exists():
     import hashlib
 

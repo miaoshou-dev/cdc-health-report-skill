@@ -1,6 +1,9 @@
-# Runtime artifacts (keep the directory in the repository).
-/artifacts/*
-!/artifacts/.gitkeep
+# Runtime artifacts (keep the directory in the Skill).
+/skills/find-china-cdc-health-report/artifacts/*
+!/skills/find-china-cdc-health-report/artifacts/.gitkeep
+
+# Local release packages.
+/dist/
 
 # Task-local output and temporary files.
 /work/

@@ -1,6 +1,6 @@
-# PDF extraction contract
+# PDF extraction rules
 
-The separately installed `cdc-report-pdf-extractor` receives one local official PDF, normalized report metadata, one absolute `extracted.json` path, and `extract` or `vision` authorization.
+Process one already verified local official PDF directly within the main Skill. Require normalized report metadata, one absolute `extracted.json` path, and `extract` or `vision` authorization.
 
 ## Native extraction
 

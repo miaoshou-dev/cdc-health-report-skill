@@ -42,10 +42,10 @@ For HTML-only reports, do not search for or create a PDF.
 - difficult temporal matching → `references/matching-rules.md`
 - structured report metadata → `references/report-schema.md`
 - persisted extraction → `references/output-schema.md` and `references/artifact-schema.md`
-- PDF extraction → `references/pdf-extraction-rules.md` and the companion extractor Skill
+- PDF extraction → `references/pdf-extraction-rules.md`
 - explicit visual analysis → `references/vision-task-rules.md`
 - explicit comparison → `references/metric-schema.md`
-- development/regression → `references/source-schema.md` and `references/test-cases.md`
+- page and carrier parsing details → `references/source-schema.md`
 
 ## Normalize and match
 
@@ -99,11 +99,10 @@ For PDF extraction without explicit download, use the same downloader in a task-
 
 - Write exactly one parsing artifact: `artifacts/<report-id>/extracted.json`.
 - For HTML, extract the verified main text, DOM tables, figure titles, and image URLs into `content`. Do not save HTML, DOM, or snapshots.
-- For PDF, invoke `cdc-report-pdf-extractor` with the local PDF, normalized report metadata, one absolute `extracted.json` path, and `extract` or `vision` authorization.
+- For PDF, read `references/pdf-extraction-rules.md` and process the local verified PDF directly into one `extracted.json`.
 - PDF extraction covers every physical page in order. Store native text and tables directly on each page.
 - When relevant content cannot be read natively, set that page's `requires_vision=true` and add only its page number to `vision_pages`.
 - Do not create a second parsing artifact, page inventory file, visual-task file, screenshot, or retained crop.
-- If the companion extractor is unavailable, return `extractor_unavailable`.
 
 ## Vision, comparison, and output
 
@@ -113,4 +112,4 @@ Compare reports only when explicitly requested and after checking methodology, p
 
 Return concise text by default: status, title, period, issue, publication date, verified URLs, match method, warnings, saved paths, and permitted next actions.
 
-Use one status: `success`, `invalid_query`, `ambiguous`, `not_found`, `search_budget_exceeded`, `source_unavailable`, `browser_unavailable`, `tool_environment_error`, `detail_unverified`, `artifact_store_unavailable`, `download_failed`, `extractor_unavailable`, `extraction_partial`, `vision_budget_exceeded`, or `internal_error`.
+Use one status: `success`, `invalid_query`, `ambiguous`, `not_found`, `search_budget_exceeded`, `source_unavailable`, `browser_unavailable`, `tool_environment_error`, `detail_unverified`, `artifact_store_unavailable`, `download_failed`, `extraction_partial`, `vision_budget_exceeded`, or `internal_error`.

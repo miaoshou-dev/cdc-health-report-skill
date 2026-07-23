@@ -6,7 +6,7 @@ Schema version: `2.0`.
 
 Use one primary status:
 
-`success`, `invalid_query`, `ambiguous`, `not_found`, `search_budget_exceeded`, `source_unavailable`, `browser_unavailable`, `tool_environment_error`, `detail_unverified`, `artifact_store_unavailable`, `download_failed`, `extractor_unavailable`, `extraction_partial`, `vision_budget_exceeded`, or `internal_error`.
+`success`, `invalid_query`, `ambiguous`, `not_found`, `search_budget_exceeded`, `source_unavailable`, `browser_unavailable`, `tool_environment_error`, `detail_unverified`, `artifact_store_unavailable`, `download_failed`, `extraction_partial`, `vision_budget_exceeded`, or `internal_error`.
 
 ## Persisted extraction
 
